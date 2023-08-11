@@ -1,9 +1,11 @@
-Tailwind CSS
+High order component
+
+Takes a component and returns the component
 
 
-ways to write CSS
-1)Styled Components
-2)SCSS
-3)SASS
-4)TailwindCSS
-5)Material UI
+//Controlled and uncontrolled component
+<!-- Props Drilling -->
+problem of passing props
+
+
+React Context

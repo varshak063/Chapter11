@@ -1,47 +1,44 @@
+
 import { Shimmer } from "./Shimmer";
-import { CDN_URL, MENU_URL } from "../utils/constants";
 import { useParams } from "react-router-dom";
 import { useRestroMenuHook } from "../utils/useRestroMenuHook";
+import { RestroCategories } from "./RestroCategories";
+import { useState } from "react";
 
 export const RestroMenuPage = () => {
   //Extracting Restro ID using useParam HOOK
   const { restroId } = useParams();
   const restromenuName = useRestroMenuHook(restroId);
-
+  const [showIndex, setShowIndex] = useState(null);
   if (restromenuName === null) return <Shimmer />;
 
-  const { name, cloudinaryImageId, city, cuisines } =
-    restromenuName?.cards[0]?.card?.card?.info;
-  const { itemCards } =
-    restromenuName?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards[2]?.card
-      ?.card;
+  const { name, city, cuisines } = restromenuName?.cards[0]?.card?.card?.info;
 
+  const menuCategory =
+    restromenuName?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards.filter(
+      (c) =>
+        c.card?.card?.["@type"] ===
+        "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"
+    );
   return (
     <>
-      <div className="p-5">
-        <h1 className="font-bold p-2">{name}</h1>
-        <img
-          className="w-[200]"
-          alt="logo"
-          src={CDN_URL + cloudinaryImageId}
-        />
-        <h5>{city}</h5>
-        <h4>{cuisines.join(" , ")}</h4>
-        <h2>Menu</h2>
-        <ul className="flex flex-wrap">
-          {itemCards?.map((item) => (
-            <li className=" h-80 bg-pink-50 m-4 p-4 w-[200]" key={item?.card?.info?.id}>
-              <div className="p-2">
-                <p className="truncate">{item?.card?.info?.name}</p>
-                <p className="menuPrice">Rs-{item?.card?.info?.defaultPrice / 100}</p>
-              </div>
+      <div className="p-5 text-center">
+        <h1 className="font-bold p-2 text-lg my-10">{name}</h1>
+        <p className="font-bold text-sm">
+          {cuisines.join(" , ")}-{city}
+        </p>
+        <h2 className="font-bold my-2">Menus</h2>
+        {/* categories accordian */}
+        {/* controlled component */}
 
-              <div>
-                <img className="" src={MENU_URL + item?.card?.info?.imageId} />
-              </div>
-            </li>
-          ))}
-        </ul>
+        {menuCategory.map((category, index) => (
+          <RestroCategories
+            key={category?.card?.card?.title}
+            categories={category?.card?.card}
+            showItemList={index === showIndex ? true : false}
+            setShowIndex={() => setShowIndex(index)}
+          />
+        ))}
       </div>
     </>
   );

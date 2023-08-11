@@ -1,14 +1,17 @@
-import { useEffect, useState } from "react";
-import { RestaurantCard } from "./RestaurantCard";
+import { useEffect, useState, useContext } from "react";
+import { RestaurantCard, withDiscountLabel } from "./RestaurantCard";
 import { Shimmer } from "./Shimmer";
 import { Link } from "react-router-dom";
 import { useInternetCheck } from "../utils/useInternetCheck";
+import { UserContext } from "../utils/UserContext";
 export const Body = () => {
   //State Variable in React
   const [fakeRestroDataList, setFakeRestroDataList] = useState([]);
   const [filteredRestro, setFilteredRestro] = useState([]);
-
+  console.log("list", fakeRestroDataList);
   const [searchTextVariable, setSearchTextVariable] = useState("");
+
+  const RestaurantCardDiscount = withDiscountLabel(RestaurantCard);
   useEffect(() => {
     fetchData();
   }, []);
@@ -31,6 +34,7 @@ export const Body = () => {
   if (isOnline === false) {
     return <h1>Looks like offline please check network connection</h1>;
   }
+  const { setUserName, loggedInUser } = useContext(UserContext);
   return fakeRestroDataList?.length === 0 ? (
     <Shimmer />
   ) : (
@@ -73,11 +77,25 @@ export const Body = () => {
           >
             Top Rated Restro
           </button>
+          <div className="py-2 m-2 font-bold">
+            UserName:{" "}
+            <input
+              type="text"
+              value={loggedInUser}
+              onChange={(e) => setUserName(e.target.value)}
+              className="rounded p-2 mx-2 border border-slate-300"
+              placeholder="Enter Name"
+            />
+          </div>
         </div>
         <div className="flex flex-wrap">
           {filteredRestro?.map((items) => (
             <Link to={"/restromenu/" + items?.info?.id} key={items?.info?.id}>
-              <RestaurantCard restoData={items?.info} />
+              {items?.info?.avgRating > 4 ? (
+                <RestaurantCardDiscount restoData={items?.info} />
+              ) : (
+                <RestaurantCard restoData={items?.info} />
+              )}
             </Link>
           ))}
         </div>

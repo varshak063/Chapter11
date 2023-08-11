@@ -1,26 +1,28 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { LOGO_URL } from "../utils/constants";
 import { Link } from "react-router-dom";
 import { useInternetCheck } from "../utils/useInternetCheck";
+import { UserContext } from "../utils/UserContext";
 
 export const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState("Login");
- 
+
   const isOnline = useInternetCheck();
+  const {loggedInUser} = useContext(UserContext);
   return (
     <>
-      <div className="flex justify-between items-center bg-pink-100 mb shadow-lg">
+      <div className="flex justify-between items-center bg-pink-100 mb shadow-lg px-4">
         <div className="logo-container">
           <img className="w-20" src={LOGO_URL} alt="Logo" />
         </div>
         <div className="nav-items">
-          <ul className="flex align-middle justify-between font-bold">
-            <li className="m-2">
+          <ul className="flex align-middle justify-between font-semibold text-xs">
+            <li className="m-2 align-middle mr-4">
               Online Status:
               {isOnline === true ? (
-                <button className="bg-green-900"></button>
+                <button className="bg-green-600 p-2 absolute rounded-3xl ml-1"></button>
               ) : (
-                <button className="Offline"></button>
+                <button className="bg-red-500 p-2 absolute rounded-3xl ml-1"></button>
               )}
             </li>
             <Link to="/">
@@ -48,6 +50,7 @@ export const Header = () => {
             >
               {isLoggedIn}
             </button>
+            <li className="m-2">{loggedInUser}</li>
           </ul>
         </div>
       </div>

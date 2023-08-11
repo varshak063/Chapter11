@@ -27,12 +27,12 @@ export class UserClass extends Component {
     // console.log(this.props.name + "child render called");
     return (
       <>
-        <div className="userscard">
+        <div className="flex flex-wrap ">
           {userInfo.map((item) => (
-            <div key={item.id} className="usercardinfo">
-             <div> <h4>Name : {item.login}</h4>
-              <h6>Location : {item.type}</h6></div>
-              <div><img src={item.avatar_url} /></div>
+            <div key={item.id} className="m-2 p-3">
+              <h4>Name : {item.login}</h4>
+              <h6>Location : {item.type}</h6>
+              <img className="w-36" src={item.avatar_url} />
             </div>
           ))}
         </div>
